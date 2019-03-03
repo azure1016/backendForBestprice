@@ -1,5 +1,7 @@
 package com.example.ece651BestPrice.bean;
 
+import org.apache.commons.lang.enums.Enum;
+
 public class Product {
     private String UPC;
     private String name;

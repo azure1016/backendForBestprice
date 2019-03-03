@@ -1,7 +1,7 @@
 package com.example.ece651BestPrice.bean;
 
 public class Store {
-    private int storeID;
+
     private String storename;
     private String address;
     private double latitude;
@@ -9,14 +9,6 @@ public class Store {
     private String city;
     private String province;
     private String postcode;
-
-    public int getStoreID() {
-        return storeID;
-    }
-
-    public void setStoreID(int storeID) {
-        this.storeID = storeID;
-    }
 
     public String getStorename() {
         return storename;

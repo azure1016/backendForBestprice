@@ -2,24 +2,26 @@ package com.example.ece651BestPrice.mapper;
 
 import com.example.ece651BestPrice.bean.Stock;
 import org.apache.ibatis.annotations.*;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.dao.DataAccessException;
 
 @Mapper
 public interface StockMapper {
-    @Insert("INSERT INTO Stock(UPC, storeID, price)"+
-            "VALUE(#{UPC}, #{storeID}, #{price})")
-    int createStock(Stock stock);
+    @Insert("INSERT INTO Stock(UPC, storename, price)"+
+            "VALUE(#{UPC}, #{storename}, #{price})")
+    int createStock(Stock stock) throws DataAccessException;
 
-    @Select("SELECT * FROM Stock WHERE UPC=#{UPC} AND storeID=#{storeID}")
-    Stock queryStock(@Param("UPC")String UPC, @Param("storeID")int storeID);
+    @Select("SELECT * FROM Stock WHERE UPC=#{UPC} AND storename=#{storename}")
+    Stock queryStock(@Param("UPC")String UPC, @Param("storename")String storename) throws DataAccessException;
 
     @Update("UPDATE Stock SET price=#{price}"+
-    " WHERE UPC=#{UPC} AND storeID=#{storeID}")
-    int updateStockprice(Stock stock);
+    " WHERE UPC=#{UPC} AND storename=#{storename}")
+    int updateStockprice(Stock stock) throws DataAccessException;
 
-    @Delete("DELETE FROM Stock WHERE UPC=#{UPC} AND storeID=#{storeID}")
-    int deleteStock(@Param("UPC")String UPC, @Param("storeID")int storeID);
+    @Delete("DELETE FROM Stock WHERE UPC=#{UPC} AND storename=#{storename}")
+    int deleteStock(@Param("UPC")String UPC, @Param("storename")String storename) throws DataAccessException;
 
+    @Select("SELECT COUNT(*) FROM Stock WHERE UPC=#{UPC} AND storename=#{storename}")
+    int queryStocknum(@Param("UPC")String UPC, @Param("storename")String storename) throws DataAccessException;
 
 
 

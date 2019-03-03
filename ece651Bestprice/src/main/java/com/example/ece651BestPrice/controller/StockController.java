@@ -4,8 +4,10 @@ import com.example.ece651BestPrice.bean.Stock;
 import com.example.ece651BestPrice.mapper.StockMapper;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +20,17 @@ public class StockController {
     @RequestMapping(value = "/Insert", method = RequestMethod.GET)
     public Object createStock(@ModelAttribute Stock stock){
         Map<String, String> result = new HashMap<>();
-        int createResult = this.stockMapper.createStock(stock);
+        int createResult = 0;
+        try {
+            createResult = this.stockMapper.createStock(stock);
+        } catch (DataAccessException e) {
+            final Throwable cause = e.getCause();
+            if(cause instanceof SQLIntegrityConstraintViolationException) {
+                result.put("msg", "existed stock");
+                JSONArray result1 = JSONArray.fromObject(result);
+                return result1;
+            }
+        }
         if(createResult>0){
             result.put("msg", "success");
         }
@@ -30,9 +42,16 @@ public class StockController {
 
     }
 
-    @RequestMapping(value = "/Query/{UPC}/{storeID}", method = RequestMethod.GET)
-    public JSONArray getStock(@PathVariable("UPC") String UPC, @PathVariable("storeID") int storeID){
-        JSONArray result = JSONArray.fromObject(stockMapper.queryStock(UPC, storeID));
+    @RequestMapping(value = "/Query/{UPC}/{storename}", method = RequestMethod.GET)
+    public JSONArray getStock(@PathVariable("UPC") String UPC, @PathVariable("storename") String storename){
+        Stock stock = stockMapper.queryStock(UPC, storename);
+        if(stock == null){
+            Map<String, String> result1 = new HashMap<>();
+            result1.put("msg", "No such Stock");
+            JSONArray result2 = JSONArray.fromObject(result1);
+            return result2;
+        }
+        JSONArray result = JSONArray.fromObject(stock);
         return result;
     }
 
@@ -44,26 +63,25 @@ public class StockController {
             result.put("msg", "success");
         }
         else{
-            result.put("msg", "failure");
+            result.put("msg", "no such UPC and storename");
         }
         JSONArray result1 = JSONArray.fromObject(result);
         return result1;
 
     }
 
-    @RequestMapping(value = "/Delete/{UPC}/{storeID}", method = RequestMethod.GET)
-    public Object deleteStock(@PathVariable("UPC") String UPC, @PathVariable("storeID") int storeID){
+    @RequestMapping(value = "/Delete/{UPC}/{storename}", method = RequestMethod.GET)
+    public Object deleteStock(@PathVariable("UPC") String UPC, @PathVariable("storename") String storename){
         Map<String, String> result = new HashMap<>();
-        int createResult = this.stockMapper.deleteStock(UPC, storeID);
+        int createResult = this.stockMapper.deleteStock(UPC, storename);
         if(createResult>0){
             result.put("msg", "success");
         }
         else{
-            result.put("msg", "failure");
+            result.put("msg", "no such UPC");
         }
         JSONArray result1 = JSONArray.fromObject(result);
         return result1;
     }
-
 
 }

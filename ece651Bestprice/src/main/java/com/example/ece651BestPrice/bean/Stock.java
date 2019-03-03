@@ -1,9 +1,17 @@
 package com.example.ece651BestPrice.bean;
 
 public class Stock {
+    private String storename;
     private String UPC;
-    private int storeID;
     private double price;
+
+    public String getStorename() {
+        return storename;
+    }
+
+    public void setStorename(String storename) {
+        this.storename = storename;
+    }
 
     public String getUPC() {
         return UPC;
@@ -11,14 +19,6 @@ public class Stock {
 
     public void setUPC(String UPC) {
         this.UPC = UPC;
-    }
-
-    public int getStoreID() {
-        return storeID;
-    }
-
-    public void setStoreID(int storeID) {
-        this.storeID = storeID;
     }
 
     public double getPrice() {
